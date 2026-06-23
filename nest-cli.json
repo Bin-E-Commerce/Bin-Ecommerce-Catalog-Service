@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "entryFile": "services/catalog-service/src/main",
+  "compilerOptions": {
+    "tsConfigPath": "tsconfig.json"
+  }
+}
+
