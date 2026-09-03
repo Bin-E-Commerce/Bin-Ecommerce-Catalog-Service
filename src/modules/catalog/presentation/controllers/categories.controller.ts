@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
-import { CatalogService } from "../services/catalog.service";
+import { CatalogService } from "../../application/services/catalog.service";
 import { ListCategoriesQueryDto } from "../dto/list-categories-query.dto";
 import { ListCategoryAttributesQueryDto } from "../dto/list-category-attributes-query.dto";
 
