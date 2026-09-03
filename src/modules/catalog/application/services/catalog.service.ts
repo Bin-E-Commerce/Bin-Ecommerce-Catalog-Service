@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Category } from "../../../database/entities/category.entity";
-import { CategoryAttribute } from "../../../database/entities/category-attribute.entity";
-import { ListCategoriesQueryDto } from "../dto/list-categories-query.dto";
-import { ListCategoryAttributesQueryDto } from "../dto/list-category-attributes-query.dto";
+import { Category } from "../../../../database/entities/category.entity";
+import { CategoryAttribute } from "../../../../database/entities/category-attribute.entity";
+import { ListCategoriesQueryDto } from "../../presentation/dto/list-categories-query.dto";
+import { ListCategoryAttributesQueryDto } from "../../presentation/dto/list-category-attributes-query.dto";
 import { PaginatedResponse } from "../types/paginated-response.type";
 
 @Injectable()

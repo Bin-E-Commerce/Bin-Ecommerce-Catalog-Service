@@ -3,8 +3,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Category } from "../../database/entities/category.entity";
 import { CategoryAttribute } from "../../database/entities/category-attribute.entity";
 import { CategoryAttributeOption } from "../../database/entities/category-attribute-option.entity";
-import { CategoriesController } from "./controllers/categories.controller";
-import { CatalogService } from "./services/catalog.service";
+import { CategoriesController } from "./presentation/controllers/categories.controller";
+import { CatalogService } from "./application/services/catalog.service";
 
 @Module({
   imports: [
