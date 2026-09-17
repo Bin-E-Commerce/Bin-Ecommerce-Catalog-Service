@@ -65,7 +65,7 @@ Catalog Service is not a product database. It does not own product price, invent
 | HTTP prefix | /api |
 | URI version | v1 |
 | Development docs | /docs |
-| Health endpoint | /api/health |
+| Health endpoint | /api/v1/health |
 | Database | PostgreSQL + TypeORM |
 | Primary module | Catalog |
 | Persistence mode | Synchronize outside production in current bootstrap |
@@ -189,7 +189,7 @@ The service expects PostgreSQL at the values configured in .env.
 ### 6.2. Check health and OpenAPI
 
 ~~~powershell
-curl http://localhost:3003/api/health
+curl http://localhost:3003/api/v1/health
 ~~~
 
 Open http://localhost:3003/docs in development to inspect the generated API contract.
@@ -362,7 +362,7 @@ Catalog read APIs are not a substitute for write-time validation. A category can
 
 ## 11. API Surface
 
-All versioned application routes use /api/v1. Health remains /api/health.
+All application routes, including health, use /api/v1.
 
 ### Categories
 
@@ -371,7 +371,7 @@ All versioned application routes use /api/v1. Health remains /api/health.
 | GET | /api/v1/categories | List active categories, defaulting to roots |
 | GET | /api/v1/categories/:id | Read one active category |
 | GET | /api/v1/categories/:id/attributes | Read active attributes and optional active options |
-| GET | /api/health | Check process/database health contract |
+| GET | /api/v1/health | Check process/database health contract |
 
 ### Query inputs
 
