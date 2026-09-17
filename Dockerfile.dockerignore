@@ -1,0 +1,29 @@
+# Docker context là root repository; chỉ giữ manifest, cấu hình chung và source Catalog.
+*
+!package.json
+!package-lock.json
+!tsconfig.base.json
+!packages/
+!packages/common/
+!packages/common/**
+!services/
+!services/catalog-service/
+!services/catalog-service/package.json
+!services/catalog-service/tsconfig.json
+!services/catalog-service/nest-cli.json
+!services/catalog-service/src/
+!services/catalog-service/src/**
+
+# Không đưa dependency/output/secret local vào Docker context.
+**/node_modules
+**/dist
+**/coverage
+**/.env
+**/.env.*
+!services/catalog-service/.env.example
+
+# Metadata và file tạm không phục vụ build.
+**/.git
+**/.gitignore
+**/.vscode
+**/*.log
