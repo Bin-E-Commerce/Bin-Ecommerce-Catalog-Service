@@ -22,7 +22,7 @@ import { HealthModule } from "./modules/health/health.module";
         entities: [__dirname + "/**/*.entity{.ts,.js}"],
         synchronize: config.get<string>("NODE_ENV") !== "production",
         ssl:
-          config.get<string>("NODE_ENV") === "production"
+          config.get<string>("POSTGRES_SSL", "false") === "true"
             ? { rejectUnauthorized: false }
             : false,
         logging: config.get<string>("TYPEORM_LOGGING", "false") === "true",
