@@ -32,6 +32,9 @@ RUN npm prune --omit=dev
 # -----------------------------------------------------------------------------
 FROM node:20-alpine AS production
 
+# Update Alpine packages so the runtime receives current security fixes.
+RUN apk upgrade --no-cache
+
 # Catalog chỉ cần quyền đọc source, mở HTTP và kết nối PostgreSQL.
 # npm/npx chỉ cần ở builder để cài dependency; runtime chỉ chạy bằng node.
 # Loại chúng khỏi final image để không mang theo dependency/tooling không cần thiết của npm.
