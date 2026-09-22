@@ -46,6 +46,7 @@ WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/services/catalog-service/dist/services/catalog-service/src ./dist
+COPY --from=builder /app/services/catalog-service/dist/packages/common ./dist/packages/common
 
 # Compose dùng 3003 trong network nội bộ; có thể override PORT khi chạy riêng.
 ENV NODE_ENV=production \
