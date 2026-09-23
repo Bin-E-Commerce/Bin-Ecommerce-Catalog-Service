@@ -16,7 +16,9 @@ COPY packages/common ./packages/common
 
 # npm ci giữ dependency đồng nhất với lockfile root; không chạy lifecycle script
 # không cần thiết trong lúc tạo image.
-RUN npm ci --workspace=services/catalog-service --include=dev --ignore-scripts
+ENV NODE_ENV=development
+RUN npm ci --workspace=services/catalog-service --include=dev --bin-links=true --ignore-scripts \
+  && test -x node_modules/.bin/tsc
 
 # Chỉ copy mã nguồn của Catalog sau khi dependency đã được cache.
 COPY services/catalog-service/src ./services/catalog-service/src
