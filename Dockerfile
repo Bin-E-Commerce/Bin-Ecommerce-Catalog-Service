@@ -45,7 +45,8 @@ RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/services/catalog-service/dist/services/catalog-service/src ./dist
+# Giữ nguyên cây thư mục build để import tương đối tới packages/common không bị đổi base path.
+COPY --from=builder /app/services/catalog-service/dist/services/catalog-service ./dist/services/catalog-service
 COPY --from=builder /app/services/catalog-service/dist/packages/common ./dist/packages/common
 
 # Compose dùng 3003 trong network nội bộ; có thể override PORT khi chạy riêng.
@@ -64,4 +65,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 USER nestjs
 
 # Chạy Node trực tiếp để process nhận SIGTERM đúng khi container được restart.
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/services/catalog-service/src/main.js"]
