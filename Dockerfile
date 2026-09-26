@@ -18,13 +18,15 @@ COPY packages/common ./packages/common
 # không cần thiết trong lúc tạo image.
 ENV NODE_ENV=development
 RUN npm ci --workspace=services/catalog-service --include=dev --bin-links=true --ignore-scripts \
-  && test -x node_modules/.bin/tsc
+  && test -x node_modules/.bin/tsc \
+  && test -x node_modules/.bin/tsc-alias
 
 # Chỉ copy mã nguồn của Catalog sau khi dependency đã được cache.
 COPY services/catalog-service/src ./services/catalog-service/src
 
 # Catalog dùng tsconfig.json hiện có để compile theo rootDir của monorepo.
-RUN npx tsc -p services/catalog-service/tsconfig.json
+RUN npx tsc -p services/catalog-service/tsconfig.json \
+  && npx tsc-alias -p services/catalog-service/tsconfig.json
 
 # Loại compiler, Nest CLI và Jest trước khi chuyển node_modules sang runtime.
 RUN npm prune --omit=dev
