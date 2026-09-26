@@ -1,60 +1,60 @@
 // File này khởi động Catalog Service, cấu hình validation/versioning và telemetry HTTP.
 // File không chứa logic catalog; feature module giữ toàn bộ nghiệp vụ sản phẩm.
 
-import { NestFactory } from "@nestjs/core";
-import { ValidationPipe, VersioningType } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import helmet from "helmet";
-import { AppModule } from "./app.module";
-import { buildHelmetOptions } from "./common/config/helmet.config";
-import { setupHttpObservability } from "../../../packages/common/observability/http-observability";
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
+import { AppModule } from '@/app.module';
+import { buildHelmetOptions } from '@/common/config/helmet.config';
+import { setupHttpObservability } from '@common/observability/http-observability';
 
 // Khởi động Catalog Service với prefix/versioning giống các service còn lại.
 // Khởi động catalog boundary và đăng ký middleware cross-cutting trước khi nhận traffic.
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule, {
-    logger: ["error", "warn", "log"],
-  });
+    const app = await NestFactory.create(AppModule, {
+        logger: ['error', 'warn', 'log'],
+    });
 
-  app.getHttpAdapter().getInstance().set("trust proxy", 1);
+    app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
-  const config = app.get(ConfigService);
-  const isDev = config.get<string>("NODE_ENV") !== "production";
-  const port = config.get<number>("PORT", 3003);
+    const config = app.get(ConfigService);
+    const isDev = config.get<string>('NODE_ENV') !== 'production';
+    const port = config.get<number>('PORT', 3003);
 
-  app.use(helmet(buildHelmetOptions(isDev)));
-  app.setGlobalPrefix("api");
-  // Đăng ký metrics RED và request ID trước khi service bắt đầu nhận traffic.
-  setupHttpObservability(app, "catalog-service");
-  app.enableVersioning({ type: VersioningType.URI, defaultVersion: "1" });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
-  app.enableCors({ origin: false });
-
-  if (isDev) {
-    const documentConfig = new DocumentBuilder()
-      .setTitle("Catalog Service")
-      .setDescription("Category and product attribute master data APIs")
-      .setVersion("1.0")
-      .build();
-    SwaggerModule.setup(
-      "docs",
-      app,
-      SwaggerModule.createDocument(app, documentConfig),
+    app.use(helmet(buildHelmetOptions(isDev)));
+    app.setGlobalPrefix('api');
+    // Đăng ký metrics RED và request ID trước khi service bắt đầu nhận traffic.
+    setupHttpObservability(app, 'catalog-service');
+    app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
+    app.useGlobalPipes(
+        new ValidationPipe({
+            whitelist: true,
+            forbidNonWhitelisted: true,
+            transform: true,
+            transformOptions: { enableImplicitConversion: true },
+        }),
     );
-  }
+    app.enableCors({ origin: false });
 
-  app.enableShutdownHooks();
+    if (isDev) {
+        const documentConfig = new DocumentBuilder()
+            .setTitle('Catalog Service')
+            .setDescription('Category and product attribute master data APIs')
+            .setVersion('1.0')
+            .build();
+        SwaggerModule.setup(
+            'docs',
+            app,
+            SwaggerModule.createDocument(app, documentConfig),
+        );
+    }
 
-  await app.listen(port);
-  console.log(`[catalog-service] Running on port ${port}`);
+    app.enableShutdownHooks();
+
+    await app.listen(port);
+    console.log(`[catalog-service] Running on port ${port}`);
 }
 
 void bootstrap();
