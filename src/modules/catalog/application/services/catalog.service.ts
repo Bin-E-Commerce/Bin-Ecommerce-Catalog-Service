@@ -1,3 +1,5 @@
+// Điều phối truy vấn ngành hàng và thuộc tính Catalog cho các luồng sản phẩm.
+// Không đưa thông tin tổ chức sản xuất vào schema sản phẩm trả cho consumer.
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,6 +8,11 @@ import { CategoryAttribute } from '@/database/entities/category-attribute.entity
 import { ListCategoriesQueryDto } from '@/modules/catalog/presentation/dto/list-categories-query.dto';
 import { ListCategoryAttributesQueryDto } from '@/modules/catalog/presentation/dto/list-category-attributes-query.dto';
 import { PaginatedResponse } from '@/modules/catalog/application/types/paginated-response.type';
+
+const HIDDEN_PRODUCT_ATTRIBUTE_NAMES = [
+    'manufacturer/trader name',
+    'manufacturer/trader address',
+];
 
 @Injectable()
 export class CatalogService {
@@ -79,7 +86,7 @@ export class CatalogService {
         return category;
     }
 
-    // Lấy thuộc tính của ngành hàng, bao gồm option nếu FE cần render combobox/select.
+    // Trả chung schema cho form và validation, trừ hai trường tổ chức sản xuất.
     async listCategoryAttributes(
         categoryId: string,
         query: ListCategoryAttributesQueryDto,
@@ -89,7 +96,13 @@ export class CatalogService {
         const qb = this.attributeRepository
             .createQueryBuilder('attribute')
             .where('attribute.categoryId = :categoryId', { categoryId })
-            .andWhere('attribute.isActive = :isActive', { isActive: true });
+            .andWhere('attribute.isActive = :isActive', { isActive: true })
+            // Tên gốc ổn định qua các ngành hàng; lọc ở nguồn để UI và validator
+            // cùng nhận một schema và không phát sinh yêu cầu nhập hai trường này.
+            .andWhere(
+                'LOWER(BTRIM(attribute.name)) NOT IN (:...hiddenNames)',
+                { hiddenNames: HIDDEN_PRODUCT_ATTRIBUTE_NAMES },
+            );
 
         if (!query.includeConditional) {
             qb.andWhere('attribute.parentAttributeId IS NULL');
